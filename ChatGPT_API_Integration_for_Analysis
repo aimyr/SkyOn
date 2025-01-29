@@ -1,0 +1,41 @@
+import openai
+import json
+
+# Set your OpenAI API key
+openai.api_key = "YOUR_API_KEY"
+
+def analyze_with_chatgpt(dtm_data, video_analysis):
+    prompt = f"""
+    Analyze this geospatial data:
+    - DTM Elevation Range: {dtm_data['elevation_range']}
+    - Video Detected Objects: {video_analysis['objects']}
+    - Area Coordinates: {dtm_data['coordinates']}
+
+    Provide insights about:
+    1. Terrain suitability for construction
+    2. Environmental risks
+    3. Anomalies in video footage
+    """
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a geospatial analysis expert."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response.choices[0].message['content']
+
+# Example data (replace with real processed data)
+dtm_data = {
+    "elevation_range": "15m-42m",
+    "coordinates": "37.7749°N, 122.4194°W"
+}
+
+video_analysis = {
+    "objects": ["vehicles", "water bodies", "vegetation"]
+}
+
+result = analyze_with_chatgpt(dtm_data, video_analysis)
+print("Analysis Results:\n", result)
